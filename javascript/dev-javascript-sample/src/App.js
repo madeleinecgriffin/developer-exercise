@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Quote from "./components/Quote";
-import $ from 'jquery';
 import { Grid, Row, Col, Panel, Button, FormGroup, FormControl } from 'react-bootstrap';
 import "./App.css";
 
@@ -43,30 +42,6 @@ class App extends Component {
       )
   };
 
-    //filters quotes by page button clicked
-    handlePageButton = id => {
-
-      console.log("hit");
-      this.setState({ currentPage: id });
-  
-      var storeSearch = this.state.picQuotes;
-  
-      //iterates through all quotes to display only with the appropriate page number
-      for (let i = 0; i < this.state.picQuotes.length; i++) {
-  
-        var element = this.state.picQuotes[i].pageNumber;
-  
-        if (element == id) {
-          storeSearch.push(this.state.picQuotes[i]);
-        }
-      }
-  
-      //sets displayed quotes to those of the page
-      this.setState({ pageQuotes: storeSearch });
-      console.log(storeSearch);
-  
-    };
-
   createPages() {
 
     //turns the number of pages into a list of links
@@ -84,27 +59,52 @@ class App extends Component {
   //this function assigns each quote a page number
   assignPages() {
 
-    var storeSearch = this.state.picQuotes;
+    var storePages = this.state.picQuotes;
     var divide = 1;
 
     //iterates through all quotes currently displaying
     for (let i = 0; i < this.state.picQuotes.length; i++) {
 
       //assigns page numbers to all the quotes so that there are 10 quotes per page
-      storeSearch[i].pageNumber = divide;
+      storePages[i].pageNumber = divide;
 
       if ((i + 1) % 10 === 0) {
         divide++;
       }
     }
 
-    this.setState({ quotes: storeSearch });
-    this.setState({ picQuotes: storeSearch });
-    
+    this.setState({ quotes: storePages });
+    this.setState({ picQuotes: storePages });
+    console.log(this.state.picQuotes);
+
     //determines which page to display on page 1 based on new filters
     this.handlePageButton(1);
 
   }
+
+  //filters quotes by page button clicked
+  handlePageButton = id => {
+
+    this.setState({ currentPage: id });
+
+    var storePage = [];
+
+    //iterates through all quotes to display only with the appropriate page number
+    for (let i = 0; i < this.state.picQuotes.length; i++) {
+
+      var element = this.state.picQuotes[i].pageNumber;
+
+      if (element == id) {
+        storePage.push(this.state.picQuotes[i]);
+      }
+    }
+
+    //sets displayed quotes to those of the page
+    this.setState({ pageQuotes: storePage });
+    console.log(this.state.pageQuotes);
+
+  };
+
 
   //gathers the search value from the input box and sets it to the search state
   handleChange = event => {
@@ -133,7 +133,7 @@ class App extends Component {
   //filters quotes by theme depending on button clicked
   handleCategoryButton = id => {
 
-    var storeSearch = [];
+    var storeCategory = [];
 
     //iterates through all quotes
     for (let i = 0; i < this.state.picQuotes.length; i++) {
@@ -141,18 +141,15 @@ class App extends Component {
       var element = this.state.picQuotes[i].theme;
 
       if (element == id) {
-        storeSearch.push(this.state.picQuotes[i]);
+        storeCategory.push(this.state.picQuotes[i]);
       }
     }
 
     //sets displayed quotes to all
-    this.setState({ picQuotes: storeSearch });
-
+    this.setState({ picQuotes: storeCategory });
+    console.log(storeCategory, this.state.picQuotes, this.state.pageQuotes);
     //reassigns page numbers to pages based on new filter criteria
     this.assignPages();
-
-    //determines which page to display on page 1 based on new filters
-    this.handlePageButton(1);
 
   };
 
@@ -180,9 +177,6 @@ class App extends Component {
 
     //reassigns page numbers to pages based on new filter criteria
     this.assignPages();
-
-    //determines which page to display on page 1 based on new filters
-    this.handlePageButton(1);
 
   };
 
