@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import Quote from "./components/Quote";
-import Page from "./components/Page";
 import Title from "./components/Title";
 import SectionBox from "./components/SectionBox";
-import ButtonOn from "./components/ButtonOn";
-import ButtonOff from "./components/ButtonOff";
 import { Grid, Row, Col, Panel, Button, FormGroup, FormControl } from 'react-bootstrap';
 import "./App.css";
 
@@ -94,6 +91,9 @@ class App extends Component {
   //filters quotes by page button clicked
   handlePageButton = id => {
 
+    //after loading new page, scrolls to top of page
+    window.scrollTo(0, 0)
+
     //if the id passed is for the previous or next button, determines which page to go to by
     //looking at the current page
     if (id === "prev" && this.state.currentPage !== 0) {
@@ -126,11 +126,6 @@ class App extends Component {
 
     //sets displayed quotes to those of the page - it will be a list of up to 10
     this.setState({ pageQuotes: storePage });
-
-    if (this.state.category === "all") {
-      
-    }
-
   };
 
 
@@ -301,10 +296,22 @@ class App extends Component {
                     </FormGroup>
                   </Col>
                   <Col md={1} sm={6} xs={6}>
-                    <Button type="button" onClick={this.handleSearchButton} className="searchButton">Search</Button>
+                    <Button 
+                      type="button" 
+                      onClick={this.handleSearchButton} 
+                      className="searchButton"
+                    >
+                      Search
+                    </Button>
                   </Col>
                   <Col md={2} sm={6} xs={6}>
-                    <Button type="button" onClick={this.handleResetButton} className="resetButton">Reset</Button>
+                    <Button 
+                      type="button" 
+                      onClick={this.handleResetButton} 
+                      className="resetButton"
+                    >
+                      Reset
+                    </Button>
                   </Col>
                 </Row>
               </form>
@@ -355,7 +362,7 @@ class App extends Component {
               {currentQuotes}
             </Quote>
 
-            <Page>
+            <Quote>
               <li className="lipage">
                 <Button 
                   type="button" 
@@ -375,7 +382,7 @@ class App extends Component {
                   Next
                 </Button>
               </li>
-            </Page>
+            </Quote>
 
           </Col>
 
