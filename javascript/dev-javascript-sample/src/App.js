@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import Quote from "./components/Quote";
+import Page from "./components/Page";
+import Title from "./components/Title";
+import SectionBox from "./components/SectionBox";
+import ButtonOn from "./components/ButtonOn";
+import ButtonOff from "./components/ButtonOff";
 import { Grid, Row, Col, Panel, Button, FormGroup, FormControl } from 'react-bootstrap';
 import "./App.css";
 
@@ -43,7 +48,7 @@ class App extends Component {
       )
   };
 
-  
+
   //this function creates the page buttons depending on how many items there are to display
   createPages() {
 
@@ -78,10 +83,10 @@ class App extends Component {
     }
 
     //sets the current list to display and then runs it back to the first page to display for that list
-    this.setState({ 
-      picQuotes: storePages 
+    this.setState({
+      picQuotes: storePages
     }, () => {
-        this.handlePageButton(1);
+      this.handlePageButton(1);
     });
   }
 
@@ -96,13 +101,13 @@ class App extends Component {
     }
     else if (id === "prev" && this.state.currentPage === 0) {
       id = this.state.currentPage + 1;
-    } 
+    }
     else if (id === "next" && this.state.currentPage !== (this.state.numPages - 1)) {
       id = this.state.currentPage + 2;
-    } 
+    }
     else if (id === "next" && this.state.currentPage === (this.state.numPages - 1)) {
       id = this.state.currentPage + 1;
-    } 
+    }
 
     //sets the current page state to the index of the array matching the page number (ie 0 if first page)
     this.setState({ currentPage: id - 1 });
@@ -121,6 +126,11 @@ class App extends Component {
 
     //sets displayed quotes to those of the page - it will be a list of up to 10
     this.setState({ pageQuotes: storePage });
+
+    if (this.state.category === "all") {
+      
+    }
+
   };
 
 
@@ -131,10 +141,10 @@ class App extends Component {
     let value = event.target.value;
 
     //stores the current search value by state
-    this.setState({ 
+    this.setState({
       search: value.toLowerCase(),
       value: event.target.value
-     });
+    });
   };
 
 
@@ -144,10 +154,10 @@ class App extends Component {
     event.preventDefault();
 
     //sets displayed quotes to all and brings us back to the first page of results
-    this.setState({ 
+    this.setState({
       value: "",
       search: "",
-      numPages: Math.ceil(this.state.quotes.length / 10) 
+      numPages: Math.ceil(this.state.quotes.length / 10)
     }, () => {
       this.handleCategoryButton(this.state.category);
     });
@@ -173,20 +183,20 @@ class App extends Component {
         else {
           var element2 = this.state.quotes[i].quote.toLowerCase();
           var check = element2.indexOf(this.state.search);
-    
+
           //if the text of the quote is contained in the search, push it to the search array
           if (check >= 0) {
             storeCategory.push(this.state.quotes[i]);
           }
-        } 
+        }
       }
     }
 
     //sets displayed quotes to only those with matching theme, resets number of pages, reassigns page numbers
-    this.setState({ 
-      picQuotes: storeCategory, 
+    this.setState({
+      picQuotes: storeCategory,
       category: id,
-      numPages: Math.ceil(storeCategory.length / 10) 
+      numPages: Math.ceil(storeCategory.length / 10)
     }, () => {
       this.createPages();
     });
@@ -222,8 +232,8 @@ class App extends Component {
     }
 
     //pushes the stored search array to the state search results and reassigns page numbers to display
-    this.setState({ 
-      picQuotes: storeSearch, 
+    this.setState({
+      picQuotes: storeSearch,
       numPages: Math.ceil(storeSearch.length / 10)
     }, () => {
       this.createPages();
@@ -241,60 +251,137 @@ class App extends Component {
             {pageQuotes.quote}
           </Panel.Heading>
           <Panel.Body>
-            <p>{pageQuotes.context}</p>
-            <p>{pageQuotes.source}</p>
-            <p>{pageQuotes.theme}</p>
+            <Col md={1} sm={0} />
+            <Col md={9} sm={0}>
+              <p>- {pageQuotes.source}, <i>{pageQuotes.context}</i> ({pageQuotes.theme})</p>
+            </Col>
+            <Col md={2} sm={0} />
           </Panel.Body>
         </Panel>
       </li>);
 
     //creates a list of buttons for each page number
     var pages = this.state.pageList.map((pageList, id) =>
-      <li key={pageList.id}>
-        <Button type="button" onClick={() => this.handlePageButton(pageList)} className="pageButton">
+      <li key={pageList.id} className="lipage">
+        <Button 
+          type="button" 
+          onClick={() => this.handlePageButton(pageList)} 
+          className={this.state.currentPage === (pageList - 1) ? "btn btn-info active" : "btn"}
+          >
           {pageList}
         </Button>
       </li>);
 
 
     return (
+
       <Grid fluid>
 
-        <Col md={12} sm={12}>
+        <Row>
 
-          <form>
-            <FormGroup>
-              <FormControl className="searchBox"
-                type="text"
-                value={this.state.value}
-                name="searchbar"
-                placeholder="Search quotes by keywords!"
-                onChange={this.handleChange}
-              />
-              <FormControl.Feedback />
-            </FormGroup>
-            <Button type="button" onClick={this.handleSearchButton} className="searchButton">Search</Button>
-            <Button type="button" onClick={this.handleResetButton} className="resetButton">Reset</Button>
-          </form>
+          <Col md={2} sm={0} />
 
-          <p>Which category of quotes would you like to view?</p>
-          <Button type="button" onClick={() => this.handleCategoryButton("all")} className="resetButton">All</Button>
-          <Button type="button" id="movies" onClick={() => this.handleCategoryButton("movies")} className="categoryButton">Movies</Button>
-          <Button type="button" id="games" onClick={() => this.handleCategoryButton("games")} className="categoryButton">Games</Button>
+          <Col md={8} sm={12}>
 
+            <Title>Search for quotes using keywords or by choosing a category!</Title>
 
-          <Quote>
-            {currentQuotes}
-          </Quote>
+            <SectionBox>
+              <form>
+                <Row>
+                  <Col md={9} sm={12} xs={12}>
+                    <FormGroup>
+                      <FormControl className="searchBox"
+                        type="text"
+                        value={this.state.value}
+                        name="searchbar"
+                        placeholder="Search quotes by keywords!"
+                        onChange={this.handleChange}
+                      />
+                      <FormControl.Feedback />
+                    </FormGroup>
+                  </Col>
+                  <Col md={1} sm={6} xs={6}>
+                    <Button type="button" onClick={this.handleSearchButton} className="searchButton">Search</Button>
+                  </Col>
+                  <Col md={2} sm={6} xs={6}>
+                    <Button type="button" onClick={this.handleResetButton} className="resetButton">Reset</Button>
+                  </Col>
+                </Row>
+              </form>
+            </SectionBox>
 
-          <Button type="button" onClick={() => this.handlePageButton("prev")} className="pageButton">Prev</Button>
-          <div>
-            {pages}
-          </div>
-          <Button type="button" onClick={() => this.handlePageButton("next")} className="pageButton">Next</Button>
+            <SectionBox>
+              <Row>
+                <Col md={3} sm={0} />
+                <Col md={6} sm={12}>
+                  <h4>Which category of quotes would you like to view?</h4>
+                  <Row>
+                    <Col md={4} sm={4} xs={4}>
+                      <Button 
+                        type="button" 
+                        onClick={() => this.handleCategoryButton("all")} 
+                        className={this.state.category === "all" ? "btn btn-info active" : "btn"}
+                        >
+                        All
+                      </Button>
+                    </Col>
+                    <Col md={4} sm={4} xs={4}>
+                      <Button 
+                        type="button" 
+                        id="movies" 
+                        onClick={() => this.handleCategoryButton("movies")} 
+                        className={this.state.category === "movies" ? "btn btn-info active" : "btn"}
+                      >
+                        Movies
+                      </Button>
+                    </Col>
+                    <Col md={4} sm={4} xs={4}>
+                      <Button 
+                        type="button" 
+                        id="games" 
+                        onClick={() => this.handleCategoryButton("games")} 
+                        className={this.state.category === "games" ? "btn btn-info active" : "btn"}
+                        >
+                        Games
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col md={3} sm={0} />
+              </Row>
+            </SectionBox>
 
+            <Quote>
+              {currentQuotes}
+            </Quote>
 
-        </Col>
+            <Page>
+              <li className="lipage">
+                <Button 
+                  type="button" 
+                  onClick={() => this.handlePageButton("prev")} 
+                  className="pageButton"
+                >
+                  Prev
+                </Button>
+              </li>
+              {pages}
+              <li className="lipage">
+                <Button 
+                  type="button" 
+                  onClick={() => this.handlePageButton("next")} 
+                  className="pageButton"
+                >
+                  Next
+                </Button>
+              </li>
+            </Page>
+
+          </Col>
+
+          <Col md={2} sm={0} />
+
+        </Row>
 
       </Grid>
     );
