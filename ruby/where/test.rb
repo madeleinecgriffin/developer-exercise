@@ -11,107 +11,90 @@ class WhereTest < Minitest::Test
     @fixtures = [@boris, @charles, @wolf, @glen]
   end
 
-  # def test_where_with_exact_match
-  #   assert_equal [@wolf], @fixtures.where(:name => 'The Wolf')
-  # end
+  def test_where_with_exact_match
+    assert_equal [@wolf], @fixtures.where(:name => 'The Wolf')
+  end
 
   def test_where_with_partial_match
     assert_equal [@charles, @glen], @fixtures.where(:title => /^B.*/)
   end
 
-  # def test_where_with_mutliple_exact_results
-  #   assert_equal [@boris, @wolf], @fixtures.where(:rank => 4)
-  # end
+  def test_where_with_mutliple_exact_results
+    assert_equal [@boris, @wolf], @fixtures.where(:rank => 4)
+  end
 
-  # def test_with_with_multiple_criteria
-  #   assert_equal [@wolf], @fixtures.where(:rank => 4, :quote => /get/)
-  # end
+  def test_with_with_multiple_criteria
+    assert_equal [@wolf], @fixtures.where(:rank => 4, :quote => /get/)
+  end
 
-  # def test_with_chain_calls
-  #   assert_equal [@charles], @fixtures.where(:quote => /if/i).where(:rank => 3)
-  # end
+  def test_with_chain_calls
+    assert_equal [@charles], @fixtures.where(:quote => /if/i).where(:rank => 3)
+  end
 end
 
 class Array
-  def where(options)
-    if options
-      elements = []
-      puts self
-      puts options
 
+  def where(options)
+
+    if options
+
+      # initializes an array for answers
+      elements = []
+
+      # iterates through each of the @fixtures
       self.each do |fixture|
 
-        if fixture[:quote].index(options[:quote]) && options.key?(:quote)
-          puts "fixture"
-          puts fixture
-          puts "options"
-          puts options
-          puts fixture
+        #if the passed options has a quote key and the specific fixure has what that option specifies
+        # add to answers
+        if options.key?(:quote) && fixture[:quote].index(options[:quote])
           elements.push(fixture)
         end
 
-        if fixture[:title].index(options[:title]) && options.key?(:title)
-          puts "fixture"
-          puts fixture
-          puts "options"
-          puts options
-          puts fixture
+        # same as above but with title
+        if options.key?(:title) && fixture[:title].index(options[:title])
           elements.push(fixture)
         end
 
+        # iterates through all keys of the given options
         options.each do |key|
+
+          # iterates through all keys of the given fixture
           fixture.each do |seckey|
+
+            # if the keys match, add the elements to the answer
             if seckey == key
-              puts "key"
-              puts key
-              puts "seckey"
-              puts seckey
-              puts "fixture"
-              puts fixture
               elements.push(fixture)
             end
           end
         end
 
+        # iterates through the answer hash to determine if ALL options keys are met
+        # and drops the fixtures that do not meet all option keys
         elements.each do |threekey|
 
           if threekey[:name] != options[:name] && options.key?(:name)
-            puts "not equal name"
-            puts threekey[:name]
-            puts options[:name]
-            puts fixture
             elements.delete(fixture)
           end
 
           if threekey[:rank] != options[:rank] && options.key?(:rank)
-            puts "not equal rank"
-            puts threekey[:rank]
-            puts options[:rank]
-            puts fixture
             elements.delete(fixture)
           end
 
-          if (threekey[:quote].index(options[:quote]) == nil) && options.key?(:quote)
-            puts "not equal quote"
-            puts threekey[:quote]
-            puts options[:quote]
-            puts fixture
+          if options.key?(:quote) && (threekey[:quote].index(options[:quote]) == nil) 
             elements.delete(fixture)
           end
 
-          if (threekey[:title].index(options[:title]) == nil) && options.key?(:title)
-            puts "not equal title"
-            puts threekey[:title]
-            puts options[:title]
-            puts fixture
+          if options.key?(:title) && (threekey[:title].index(options[:title]) == nil)
             elements.delete(fixture)
           end
         end
 
       end
 
+      # deletes duplicate answers from the answers array
       elements = elements.uniq{|t| t[:name] }
 
+      # returns the answers
       elements  
 
     end
