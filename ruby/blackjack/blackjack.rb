@@ -81,6 +81,7 @@ class DeckTest < Test::Unit::TestCase
   
   def test_dealt_card_should_not_be_included_in_playable_cards
     card = @deck.deal_card
+    puts card
     assert(@deck.playable_cards.include?(card))
   end
 
