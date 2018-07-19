@@ -15,17 +15,17 @@ class WhereTest < Minitest::Test
   #   assert_equal [@wolf], @fixtures.where(:name => 'The Wolf')
   # end
 
-  # def test_where_with_partial_match
-  #   assert_equal [@charles, @glen], @fixtures.where(:title => /^B.*/)
-  # end
+  def test_where_with_partial_match
+    assert_equal [@charles, @glen], @fixtures.where(:title => /^B.*/)
+  end
 
   # def test_where_with_mutliple_exact_results
   #   assert_equal [@boris, @wolf], @fixtures.where(:rank => 4)
   # end
 
-  def test_with_with_multiple_criteria
-    assert_equal [@wolf], @fixtures.where(:rank => 4, :quote => /get/)
-  end
+  # def test_with_with_multiple_criteria
+  #   assert_equal [@wolf], @fixtures.where(:rank => 4, :quote => /get/)
+  # end
 
   # def test_with_chain_calls
   #   assert_equal [@charles], @fixtures.where(:quote => /if/i).where(:rank => 3)
@@ -37,74 +37,81 @@ class Array
     if options
       elements = []
       puts self
+      puts options
 
       self.each do |fixture|
+
+        if fixture[:quote].index(options[:quote]) && options.key?(:quote)
+          puts "fixture"
+          puts fixture
+          puts "options"
+          puts options
+          puts fixture
+          elements.push(fixture)
+        end
+
+        if fixture[:title].index(options[:title]) && options.key?(:title)
+          puts "fixture"
+          puts fixture
+          puts "options"
+          puts options
+          puts fixture
+          elements.push(fixture)
+        end
 
         options.each do |key|
           fixture.each do |seckey|
             if seckey == key
+              puts "key"
+              puts key
+              puts "seckey"
+              puts seckey
+              puts "fixture"
+              puts fixture
               elements.push(fixture)
             end
           end
         end
 
         elements.each do |threekey|
-          puts "options"
-          puts options
-          puts "elements"
-          puts elements
+
           if threekey[:name] != options[:name] && options.key?(:name)
             puts "not equal name"
             puts threekey[:name]
             puts options[:name]
+            puts fixture
+            elements.delete(fixture)
           end
 
           if threekey[:rank] != options[:rank] && options.key?(:rank)
             puts "not equal rank"
             puts threekey[:rank]
             puts options[:rank]
+            puts fixture
+            elements.delete(fixture)
           end
 
-          if threekey[:quote] != options[:quote] && options.key?(:quote)
+          if (threekey[:quote].index(options[:quote]) == nil) && options.key?(:quote)
             puts "not equal quote"
             puts threekey[:quote]
             puts options[:quote]
+            puts fixture
+            elements.delete(fixture)
           end
 
-          # options.each do |fourkey|
-          #   puts "four"
-          #   puts fourkey
-          # end
-          # puts "threekey"
-          # puts threekey
+          if (threekey[:title].index(options[:title]) == nil) && options.key?(:title)
+            puts "not equal title"
+            puts threekey[:title]
+            puts options[:title]
+            puts fixture
+            elements.delete(fixture)
+          end
         end
 
-        # options.each do |threekey|
-        #   if threekey != elements[:name] || threekey != elements[:quote] || threekey != elements[:title] || threekey != elements[:rank]
-        #     puts "elements"
-        #     puts elements
-        #   end
-        # end
-
-        # if fixture[:name] == options[:name]
-        #   elements.push(fixture)
-        # end
-
-        # if fixture[:quote] == options[:quote]
-        #   elements.push(fixture)
-        # end
-
-        # if fixture[:title] == options[:title]
-        #   elements.push(fixture)
-        # end
-
-        # if fixture[:rank] == options[:rank]
-        #   elements.push(fixture)
-        # end
-
       end
-      
-      puts elements
+
+      elements = elements.uniq{|t| t[:name] }
+
       elements  
 
     end
